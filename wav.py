@@ -1,3 +1,7 @@
+#  aud2arr
+#  In this example an array of numbers is converted to an audio file.
+#  I just need to do this in reverse
+
 import wave
 import array
 
@@ -31,7 +35,7 @@ series = [
 # Audio characteristics
 sample_rate = 8000
 num_channels = 1
-sample_width = 1  # ?
+sample_width = 1  # 2 is 16-bit, 1 is 8-bit
 
 # Create an array of signed short integers (16-bit) from the series
 audio_array = array.array('h', series)

@@ -54,7 +54,24 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Error: No file specified.\n");
         return EXIT_FAILURE;
     }
-    fd = open(argv[1], O_RDONLY);
+    int opt;
+    char compress = 0;
+    while ((opt = getopt(argc, argv, "c")) != -1) {
+        switch (opt) {
+            case 'c':
+                //compress the array to 8-bit samples
+                compress = 1;
+                break;
+            default:
+                fprintf(stderr, "Usage: %s [-c] [file...]\n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+    if (compress) {
+        fd = open(argv[2], O_RDONLY);
+    } else {
+        fd = open(argv[1], O_RDONLY);
+    }
     char* header = malloc(44);
     read(fd, header, 44);
     parse_header(header);
@@ -63,7 +80,11 @@ int main(int argc, char **argv) {
     read(fd, arr, dsize);
     char * comma = "";
     for (int i = 0; i < dsize/2; i++) {
-        printf("%s%d", comma, (short)arr[i]);
+        short sample = (short)arr[i];
+        if (compress) {
+            sample = sample / 128;
+        }
+        printf("%s%d", comma, sample);
         comma = ", ";
     }
     printf("\n");
